@@ -1,3 +1,7 @@
+## NOTE: This file has most of the irb commands
+## that we saw in class. Unfortunately, the first
+## things we did got cut off because it was too long.
+
 :kind_of?,
 :is_a?,
 :display,
