@@ -150,7 +150,6 @@
 
 
 ; how would we find the first square number above 1 million?
-
 (first
  (filter (fn [x] (> x 1000000))
          (map #(* % %)
@@ -223,3 +222,50 @@ numbers
 ; 2 ^ 100
 (nth powers-of-two 100)
 ;;=> 1267650600228229401496703205376N
+
+
+(def infinite-foobar
+  (iterate (fn [s] (str s "bar"))
+           "foo"))
+
+(take 5 infinite-foobar)
+;;=> ("foo" "foobar" "foobarbar" "foobarbarbar" "foobarbarbarbar")
+
+;; find the first element with more than 40 characters
+(first (filter #(> (count %) 40)
+               infinite-foobar))
+;;=> "foobarbarbarbarbarbarbarbarbarbarbarbarbar"
+
+(count "foobarbarbarbarbarbarbarbarbarbarbarbarbar")
+;;=> 42
+
+;; infinite fibonacci sequence
+;; need to track not just the previous element, but the previous 2 elements
+;; we will first create:
+;; ([0 1] [1 1] [1 2] [2 3] [3 5] [5 8] ...)
+
+(defn next-fib-pair
+  [[two-back one-back]]
+  [one-back (+' two-back one-back)])
+
+(next-fib-pair [3 5])
+;;=> [5 8]
+
+(def fib-sequence
+  (map first
+       (iterate next-fib-pair [0 1])))
+
+(take 10 fib-sequence)
+;;=> (0 1 1 2 3 5 8 13 21 34)
+
+(defn fast-fib
+  "Returns the nth fib number"
+  [n]
+  (nth fib-sequence n))
+
+(fast-fib 100)
+;;=> 354224848179261915075N
+
+(fast-fib 1000)
+;;=> 43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875N
+
