@@ -100,3 +100,57 @@ getInt = do
     return $ read line
 
 -- return means: take a pure value and box it up into an IO action
+
+
+-- this works, but don't do it (use let instead):
+main5 = do
+    a <- return "This"
+    b <- return " is silly"
+    putStrLn $ a ++ b
+
+-- <- and return are more or less inverses of each other
+
+-- Prelude> :t return
+-- return :: Monad m => a -> m a
+-- it turns out that IO Actions are in typeclass Monad
+
+------- Aside: Monads
+-- A _monad_ is a structure that defines a sequence of computational steps.
+-- Monads allow you to do side-effect type things and have them evaluted later
+-- This allows us to do things like:
+--   - IO
+--   - exception handling
+--   - random number generation
+--   - concurrency
+-- In the context of IO, we define a series of computational steps that
+-- involve input and output, assign that to main, and when we run main,
+-- those steps are completed
+
+-- Practice: write a function that gets a list of strings from the user
+-- Repeatedly get lines from the user, ending when the user enters
+-- a blank line. Return that list of strings in an IO Action
+
+getListOfStrings :: IO [String]
+getListOfStrings = do
+    line <- getLine
+    if null line -- check if line is empty
+        then return []
+        else do
+            listOfStrings <- getListOfStrings
+            return $ line : listOfStrings
+
+ourPrint x = putStrLn $ show x
+
+ourPrint' :: (Show a) => a -> IO ()
+ourPrint' = putStrLn . show
+
+main = do
+    putStrLn "Enter some names:"
+    names <- getListOfStrings
+    print names
+    print $ map length names
+    putStrLn "-------"
+    mapM_ putStrLn names
+
+-- mapM_ maps a function that returns an IO action over
+-- a list, and then does all of those IO actions
