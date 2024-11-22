@@ -45,8 +45,21 @@ mother(francine, heather).
 % Write a rule that tells if X is the ancestor of Y
 
 ancestor(X, Y) :- mother(X, Y).
-ancestor(X, Y) :- mother(X, Z), ancestor(Z, Y). % this is a recursive rule
+ancestor(X, Y) :- mother(X, Z), ancestor(Z, Y). 
+% ^ this is a recursive rule
 
+% sister rule
+sister(X, Y) :- mother(Z, X), mother(Z, Y), \+(X = Y).
+% \+ means "prolog cannot prove that this thing is true"
+
+% simple math:
+feetToInches(Feet, Inches) :- Inches is Feet * 12.
+
+inchesToFeet(Feet, Inches) :- Feet is Inches / 12.
+
+%% `is` requires everything on its right side
+%% to be instantiated
+%% `is` is only used with math -- not general assignment
 
 
 %%%  From the prolog interpreter:
@@ -256,3 +269,74 @@ ancestor(X, Y) :- mother(X, Z), ancestor(Z, Y). % this is a recursive rule
 % M = janice,
 % N = heather ;
 % false.
+
+
+%%% FROM CLASS on 11/22/24
+
+% ?- sister(laura, kendra).
+% true.
+
+% ?- sister(laura, claire).
+% false.
+
+% ?- sister(zoe, Sis).
+% Sis = laura ;
+% Sis = zoe ;
+% Sis = kendra ;
+% Sis = francine.
+
+% ?- [intro].
+% true.
+
+% ?- sister(zoe, Sis).
+% Sis = laura ;
+% Sis = kendra ;
+% Sis = francine.
+
+% ?- sister(A, B).
+% A = laura,
+% B = zoe ;
+% A = laura,
+% B = kendra ;
+% A = laura,
+% B = francine ;
+% A = zoe,
+% B = laura ;
+% A = zoe,
+% B = kendra ;
+% A = zoe,
+% B = francine ;
+% A = kendra,
+% B = laura ;
+% A = kendra,
+% B = zoe ;
+% A = kendra,
+% B = francine ;
+% A = francine,
+% B = laura ;
+% A = francine,
+% B = zoe ;
+% A = francine,
+% B = kendra ;
+% false.
+
+% ?- sister(laura, Sis), mother(Sis, Niece).
+% Sis = zoe,
+% Niece = gertrude ;
+% Sis = francine,
+% Niece = heather.
+
+% ?- [intro].
+% true.
+
+% ?- feetToInches(2, 24).
+% true.
+
+% ?- feetToInches(2, 25).
+% false.
+
+% ?- feetToInches(2, Inches).
+% Inches = 24.
+
+% ?- feetToInches(F, 36).
+% ERROR: Arguments are not sufficiently instantiated
