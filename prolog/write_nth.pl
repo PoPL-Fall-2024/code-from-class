@@ -53,6 +53,18 @@
 
 nthZero(0, [H|_], H).
 nthZero(Index, [_|T], Element) :-
+    integer(Index),
     DecIndex is Index - 1,
     % write(T), write(" "), write(Index), nl,
     nthZero(DecIndex, T, Element).
+%% This version allows us to find the index of an element:
+nthZero(Index, [_|T], Element) :-
+    var(Index), % uninstantiated variable
+    nthZeroHelper(1, Index, T, Element).
+
+% We'll use a helper predicate to build up the result using
+% tail recursion
+nthZeroHelper(Ind, Ind, [Element|_], Element).
+nthZeroHelper(Ind, Result, [_|T], Element) :-
+    NextIndex is Ind + 1,
+    nthZeroHelper(NextIndex, Result, T, Element).
